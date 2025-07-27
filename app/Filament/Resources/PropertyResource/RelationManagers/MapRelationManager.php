@@ -23,8 +23,15 @@ class MapRelationManager extends RelationManager
                     ->placeholder('https://www.google.com/maps/place/...')
                     ->url()
                     ->required()
+                    ->columnSpanFull()
                     ->maxLength(255),
             ]);
+    }
+    // disable create action if a map exit for this property in db
+    public function canCreate(): bool
+    {
+        // Check if the owner record has a map
+        return ! $this->ownerRecord->map()->exists();
     }
 
     public function table(Table $table): Table
@@ -32,7 +39,16 @@ class MapRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('link')
+                    ->label('Google Map Link')
+                    ->searchable()
+                    ->limit(50)
+                    ->wrap(),
+                Tables\Columns\TextColumn::make('property.name')
+                    ->label('Property Name')
+                    ->searchable()
+                    ->limit(50)
+                    ->wrap(),
             ])
             ->filters([
                 //
@@ -41,8 +57,11 @@ class MapRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

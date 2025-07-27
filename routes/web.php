@@ -1,27 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return view('index');
-})->name('index');
+Route::get('/', [HomeController::class, 'index'])->name('index');
 
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
 
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
-Route::get('/properties', function () {
-    return view('properties');
-})->name('properties.index');
+Route::get('/properties', [HomeController::class, 'properties'])->name('properties.index');
 
-Route::get('/property/show', function () {
-    return view('propertyshow');
-})->name('property.show');
+Route::get('/property/show/{slug}', [HomeController::class, 'propertyShow'])->name('property.show');
 
-Route::get('/store', function () {
-    return view('store');
-})->name('store.index');
+Route::get('/store', [HomeController::class, 'store'])->name('store.index');
+
+Route::get('/device/show/{slug}', [HomeController::class, 'deviceShow'])->name('device.show');
+
+Route::post('inquiry', [HomeController::class, 'inquiry'])->name('inquiry.store');

@@ -6,7 +6,8 @@
                      <img src="{{ asset('assets/images/logos/eh_logo-3.png') }}"
                          style="width: 5rem; height: 4rem; margin-bottom: 1rem;" alt="Equity Homes Logo" />
                  </a>
-                 <p>Your home. Your technology. <br /> Your future—EquityHome leads the way in smart real estate.</p>
+                 <p>Your home. Your technology. <br /> Your future — EquityHome leads the way in smart, sustainable real
+                     estate.</p>
              </div>
              <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
                  <div>

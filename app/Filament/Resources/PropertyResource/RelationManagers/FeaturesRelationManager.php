@@ -20,6 +20,8 @@ class FeaturesRelationManager extends RelationManager
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->columnSpanFull()
+                    ->label('Feature Name')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('property_id')
                     ->hidden()
@@ -35,11 +37,9 @@ class FeaturesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Feature Name')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('property.name')
                     ->label('Property Name')
-                    ->sortable()
                     ->searchable()
                     ->toggleable(),
             ])
@@ -50,8 +50,13 @@ class FeaturesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Delete')
+                        ->requiresConfirmation(),
+                ])->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

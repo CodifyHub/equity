@@ -6,23 +6,23 @@
     <div class="max-w-screen-xl mx-auto px-4 py-12 ">
 
         <!-- Property Title -->
-        <h1 class="text-4xl font-bold mb-6 text-gray-900">Luxury Modern Apartment</h1>
+        <h1 class="text-4xl font-bold mb-6 text-gray-900">{{ $property->name }}</h1>
 
         <!-- Carousel -->
         <div id="property-carousel" class="relative w-full mb-10" data-carousel="slide">
             <div class="relative h-64 md:h-[450px] overflow-hidden rounded-lg">
+                <!-- Carousel items -->
                 <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80"
-                        class="w-full h-full object-cover " alt="Property Image 1">
+                    <img src="{{ asset('storage/' . $property->image) }}" class="w-full h-full object-cover "
+                        alt="Property Image 1">
                 </div>
-                <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                    <img src="https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1600&q=80"
-                        class="w-full h-full object-cover" alt="Property Image 2">
-                </div>
-                <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                    <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1600&q=80"
-                        class="w-full h-full object-cover" alt="Property Image 3">
-                </div>
+                @forelse ($property->images as $slider)
+                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                        <img src="{{ asset('storage/' . $slider->image) }}" class="w-full h-full object-cover"
+                            alt="Property Image {{ $loop->index + 2 }}">
+                    </div>
+                @empty
+                @endforelse
             </div>
 
             <!-- Slider controls -->
@@ -55,9 +55,7 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-2xl font-semibold mb-4">Property Description</h2>
                 <p class="text-gray-700 leading-relaxed">
-                    Experience elevated urban living in this luxury modern apartment located in the heart of the city.
-                    Featuring high ceilings, panoramic views, smart home technology, and elegant finishes throughout,
-                    this apartment is perfect for professionals or small families who appreciate comfort and connectivity.
+                    {!! $property->description !!}
                 </p>
             </div>
 
@@ -67,38 +65,40 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                         <h3 class="font-semibold text-gray-800 mb-1">Price</h3>
-                        <p class="text-blue-600 text-xl font-bold">$1,250,000</p>
+                        <p class="text-blue-600 text-xl font-bold"> &#8358; {{ number_format($property->price, 2) }}</p>
                     </div>
                     <div>
                         <h3 class="font-semibold text-gray-800 mb-1">Location</h3>
-                        <p>Upper Manhattan, New York City</p>
+                        <p>{{ $property->location }}</p>
                     </div>
                     <div>
                         <h3 class="font-semibold text-gray-800 mb-1">Bedrooms</h3>
-                        <p>3</p>
+                        <p>{{ $property->bedroom }} </p>
                     </div>
                     <div>
                         <h3 class="font-semibold text-gray-800 mb-1">Bathrooms</h3>
-                        <p>2</p>
+                        <p>{{ $property->bathroom }}</p>
                     </div>
                     <div class="md:col-span-2">
                         <h3 class="font-semibold text-gray-800 mb-1">Smart Features</h3>
                         <ul class="list-disc list-inside text-gray-700">
-                            <li>Smart thermostat & lighting</li>
-                            <li>Automated blinds & voice control</li>
-                            <li>24/7 monitored smart security</li>
+                            @forelse ($property->features as $feature)
+                                <li>{{ $feature->name }}</li>
+                            @empty
+                            @endforelse
                         </ul>
                     </div>
                     <div>
                         <h3 class="font-semibold text-gray-800 mb-1">Size</h3>
-                        <p>1,800 sqft</p>
+                        <p>{{ $property->size }} sqft</p>
                     </div>
                 </div>
 
                 <!-- CTA Button -->
                 <div class="mt-auto">
                     <button
-                        class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition">
+                        onclick="location.href='{{ $property->whatsapp_link }}?text=I%20am%20interested%20in%20the%20property%20{{ $property->name }}%20at%20{{ $property->location }}.%20Please%20share%20more%20details%20about%20it.%20Thanks!'"
+                        class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition coursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-300">
                         Buy Now
                     </button>
                 </div>
@@ -108,8 +108,14 @@
             <div class="mb-10 w-full lg:col-span-2">
                 <h2 class="text-2xl font-semibold mb-4">Location on Map</h2>
                 <div class="rounded-lg overflow-hidden shadow">
-                    <iframe class="w-full h-96" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3974.662145002087!2d6.990338414769167!3d4.815554096516266!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1069cf7ef9939df7%3A0xd5c6977ff4db1d6!2sPort%20Harcourt%2C%20Nigeria!5e0!3m2!1sen!2sng!4v1681657435702!5m2!1sen!2sng"></iframe>
+                    @if ($property->map)
+                        <iframe class="w-full h-96" loading="lazy" allowfullscreen
+                            referrerpolicy="no-referrer-when-downgrade" src="{{ $property->map->link }}"></iframe>
+                    @else
+                        <iframe class="w-full h-96" loading="lazy" allowfullscreen
+                            referrerpolicy="no-referrer-when-downgrade"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3974.662145002087!2d6.990338414769167!3d4.815554096516266!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1069cf7ef9939df7%3A0xd5c6977ff4db1d6!2sPort%20Harcourt%2C%20Nigeria!5e0!3m2!1sen!2sng!4v1681657435702!5m2!1sen!2sng"></iframe>
+                    @endif
                 </div>
             </div>
         </div>

@@ -15,6 +15,7 @@
     </section>
 
     <!-- Info & Form Section -->
+
     <section class="py-16 bg-white">
         <div class="max-w-screen-xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12">
 
@@ -26,8 +27,8 @@
                     feedback, or to schedule a property tour. We'll respond as quickly as possible.
                 </p>
                 <ul class="text-gray-700 space-y-4">
-                    <li><strong>📍 Address:</strong> 123 Smart Street, Port Harcourt, Nigeria</li>
-                    <li><strong>📞 Phone:</strong> +234 800 123 4567</li>
+                    <li><strong>📍 Address:</strong> #18 Mini Ezekwu Hillview Estate, Rumuogba, PH (Cocaine Estate).</li>
+                    <li><strong>📞 Phone:</strong> +2347033846561</li>
                     <li><strong>✉️ Email:</strong> info@equityhome.com</li>
                     <li><strong>🕒 Hours:</strong> Mon - Fri, 9am - 5pm</li>
                 </ul>
@@ -35,8 +36,27 @@
 
             <!-- Contact Form -->
             <div>
-                <form action="#" method="POST" class="bg-gray-50 p-8 rounded-lg shadow">
+                <form action="{{ route('inquiry.store') }}" method="POST" class="bg-gray-50 p-8 rounded-lg shadow">
+                    @csrf
                     <h3 class="text-2xl font-semibold mb-6 text-gray-800">Send us a message</h3>
+
+                    {{-- error --}}
+                    @if ($errors->any())
+                        <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    {{-- success --}}
+                    @if (session('success'))
+                        <div class="bg-green-100 text-green-700 p-4 rounded mb-4">
+                            {{ session('success') }}
+                        </div>
+                    @endif
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
@@ -48,6 +68,13 @@
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                         <input type="email" name="email"
+                            class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input type="text" name="phone"
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             required>
                     </div>

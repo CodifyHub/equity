@@ -104,30 +104,35 @@
             <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">Featured Properties</h2>
             <div class="grid md:grid-cols-3 gap-6">
                 <!-- Card -->
-                <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-4">
-                    <img src="{{ asset('assets/images/properties/p-1.jpg') }}" class="rounded mb-4" />
-                    <div class="px-5 pb-5">
-                        <a href="#">
-                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                                Luxury Villa in Port Harcourt
-                            </h5>
-                        </a>
-                        <p class="text-gray-600 dark:text-gray-300 mt-2">
-                            A stunning villa with modern architecture, smart home features, and a beautiful garden.
-                        </p>
-
-                        <div class="flex items-center justify-between mt-5">
-                            <span class="text-1xl font-bold text-gray-900 dark:text-white">
-                                &#8358; 80 m
-                            </span>
-                            <a href="#"
-                                class="text-white bg-[#0d0b35] dark:bg-[#dc975c] hover:bg-[#dc975c] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                View
+                @forelse ($properties as $property)
+                    <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-4">
+                        <img src="{{ asset('storage/' . $property->image) }}" class="rounded mb-4" />
+                        <div class="px-5 pb-5">
+                            <a href="#">
+                                <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                                    {{ $property->name }}
+                                </h5>
                             </a>
+                            <p class="text-gray-600 dark:text-gray-300 mt-2 text-justify text-sm">
+
+                                {{ $property->short_description }}
+                            </p>
+
+                            <div class="flex items-center justify-between mt-5">
+                                <span class="text-1xl font-bold text-gray-900 dark:text-white">
+                                    &#8358; {{ number_format($property->price, 2) }}
+                                </span>
+                                <a href="{{ route('property.show', $property->slug) }}"
+                                    class="text-white bg-[#0d0b35] dark:bg-[#dc975c] hover:bg-[#dc975c] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    View
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-4">
+                @empty
+                    <p> No properties yet </p>
+                @endforelse
+                {{-- <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-4">
                     <img src="{{ asset('assets/images/properties/p-2.jpg') }}" class="rounded mb-4" />
                     <div class="px-5 pb-5">
                         <a href="#">
@@ -174,11 +179,10 @@
                             </a>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
             <div class="text-center mt-8">
-                <a href="#"
-                    class="px-6 py-3 bg-[#0d0b35] dark:bg-[#dc975c] text-white rounded-lg hover:bg-[#dc975c]">
+                <a href="#" class="px-6 py-3 bg-[#0d0b35] dark:bg-[#dc975c] text-white rounded-lg hover:bg-[#dc975c]">
                     View More Properties
                 </a>
             </div>
@@ -190,78 +194,35 @@
         <div class="max-w-screen-xl mx-auto px-4">
             <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">Smart Home Devices</h2>
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow p-4">
-                    <img src="{{ asset('assets/images/devices/d-1.png') }}" class="rounded mb-4"
-                        alt="Smart Thermostat" />
-                    <div class="px-5 pb-5">
-                        <a href="#">
-                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                                Smart Thermostat
-                            </h5>
-                        </a>
-                        <p class="text-gray-600 dark:text-gray-300 mt-2">
-                            Automate temperature and energy savings, control from anywhere with your smartphone.
-                        </p>
-
-                        <div class="flex items-center justify-between mt-5">
-                            <span class="text-1xl font-bold text-gray-900 dark:text-white">
-                                &#8358; 150,000
-                            </span>
-                            <a href="#"
-                                class="text-white bg-[#0d0b35] hover:bg-[#dc975c] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                View
+                <!-- Device Card -->
+                @forelse ($smartHomeDevices as $device)
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow p-4">
+                        <img src="{{ asset('storage/' . $device->image) }}" class="rounded mb-4"
+                            alt="{{ $device->name }}" />
+                        <div class="px-5 pb-5">
+                            <a href="#">
+                                <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                                    {{ $device->name }}
+                                </h5>
                             </a>
+                            <p class="text-gray-600 dark:text-gray-300 mt-2 text-sm text-justify">
+                                {{ $device->short_description }}
+                            </p>
+
+                            <div class="flex items-center justify-between mt-5">
+                                <span class="text-1xl font-bold text-gray-900 dark:text-white">
+                                    &#8358; {{ number_format($device->price, 2) }}
+                                </span>
+                                <a href="{{ route('device.show', $device->slug) }}"
+                                    class="text-white bg-[#0d0b35] hover:bg-[#dc975c] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    View
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow p-4">
-                    <img src="{{ asset('assets/images/devices/d-2.png') }}" class="rounded mb-4" alt="Smart Door Lock" />
-                    <div class="px-5 pb-5">
-                        <a href="#">
-                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                                Smart Door Lock
-                            </h5>
-                        </a>
-                        <p class="text-gray-600 dark:text-gray-300 mt-2">
-                            Secure your home with keyless entry, remote access, and real-time notifications on your phone.
-                        </p>
+                @empty
+                @endforelse
 
-                        <div class="flex items-center justify-between mt-5">
-                            <span class="text-1xl font-bold text-gray-900 dark:text-white">
-                                &#8358; 100,000
-                            </span>
-                            <a href="#"
-                                class="text-white bg-[#0d0b35] hover:bg-[#dc975c] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                View
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow p-4">
-                    <img src="{{ asset('assets/images/devices/d-3.png') }}" class="rounded mb-4"
-                        alt="AI Security Camera" />
-                    <div class="px-5 pb-5">
-                        <a href="#">
-                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                                AI Security Camera
-                            </h5>
-                        </a>
-                        <p class="text-gray-600 dark:text-gray-300 mt-2">
-                            With advanced motion detection, night vision, and cloud storage, keep an eye on your home 24/7
-                            with peace of mind.
-                        </p>
-
-                        <div class="flex items-center justify-between mt-5">
-                            <span class="text-1xl font-bold text-gray-900 dark:text-white">
-                                &#8358; 200,000
-                            </span>
-                            <a href="#"
-                                class="text-white bg-[#0d0b35] hover:bg-[#dc975c] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                View
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="text-center mt-8">
                 <a href="#"

@@ -43,7 +43,6 @@ class PropertyResource extends Resource
                         Forms\Components\TextInput::make('slug')
                             ->required()
                             ->readonly()
-                            ->dehydrated(false)
                             ->maxLength(255),
                         Forms\Components\Textarea::make('short_description')
                             ->columnSpanFull()
@@ -63,6 +62,8 @@ class PropertyResource extends Resource
                                 'house' => 'House',
                                 'land' => 'Land',
                                 'commercial' => 'Commercial',
+                                'hotel' => 'Hotel',
+                                'short let' => 'Short Let',
                             ])
                             ->searchable(),
                         Forms\Components\TextInput::make('price')
@@ -77,7 +78,7 @@ class PropertyResource extends Resource
                             ->maxLength(255),
                         Forms\Components\FileUpload::make('image')
                             ->image()
-                            ->directory(fn(Get $get) => 'property/' . Str::slug($get('name') . '/main_image'))
+                            ->directory('property/main_image')
                             ->visibility('public')
                             ->imageEditor()
                             ->imageEditorMode(2)
@@ -149,18 +150,12 @@ class PropertyResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('price')
-                    ->money()
+                    ->money('NGN')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('location')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\TextColumn::make('bedroom')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('bathroom')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('size')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
@@ -175,34 +170,16 @@ class PropertyResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\Filter::make('is_active')
-                    ->label('Active')
-                    ->query(fn(Builder $query): Builder => $query->where('is_active', 1))
-                    ->indicateUsing(function (Builder $query): array {
-                        return [
-                            'is_active' => 'Active',
-                        ];
-                    }),
-                Tables\Filters\Filter::make('is_inactive')
-                    ->label('Inactive')
-                    ->query(fn(Builder $query): Builder => $query->where('is_active', 0))
-                    ->indicateUsing(function (Builder $query): array {
-                        return [
-                            'is_inactive' => 'Inactive',
-                        ];
-                    }),
-                Tables\Filters\Filter::make('property_type')
-                    ->label('Property Type')
-                    ->query(fn(Builder $query): Builder => $query->where('property_type', 'apartment'))
-                    ->indicateUsing(function (Builder $query): array {
-                        return [
-                            'property_type' => 'Apartment',
-                        ];
-                    }),
+                //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('view'),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Delete')
+                        ->requiresConfirmation(),
+                ])->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -215,7 +192,7 @@ class PropertyResource extends Resource
                             // to a CSV or Excel file.
                             // return Excel::download(new PropertiesExport($records), 'properties.xlsx');
                             // For now, just return a message
-                            return redirect()->route('filament.resources.properties.index')->with('success', 'Exported successfully!');
+                            return redirect()->route('filament.resources.property.index')->with('success', 'Exported successfully!');
                         }),
                 ]),
             ]);
@@ -235,7 +212,7 @@ class PropertyResource extends Resource
         return [
             'index' => Pages\ListProperties::route('/'),
             'create' => Pages\CreateProperty::route('/create'),
-            // 'edit' => Pages\EditProperty::route('/{record}/edit'),
+            'edit' => Pages\EditProperty::route('/{record}/edit'),
         ];
     }
 }

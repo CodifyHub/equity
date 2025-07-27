@@ -41,7 +41,6 @@ class ImagesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('property.name')
                     ->label('Property Name')
-                    ->sortable()
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
             ])
@@ -53,8 +52,13 @@ class ImagesRelationManager extends RelationManager
 
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Delete')
+                        ->requiresConfirmation(),
+                ])->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

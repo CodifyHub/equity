@@ -12,6 +12,8 @@ class SmartHomeDevice extends Model
         "price",
         "short_description",
         "description",
+        "whatsapp_link",
+        "device_type",
         "image",
     ];
 

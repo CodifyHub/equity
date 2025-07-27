@@ -53,6 +53,16 @@ class SmartHomeDeviceResource extends Resource
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
                     ->image()
+                    ->directory('smart-home/main_image')
+                    ->visibility('public')
+                    ->imageEditor()
+                    ->imageEditorMode(2)
+                    ->imageEditorAspectRatios([
+                        null,
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ])
                     ->required(),
                 Forms\Components\Select::make('device_type')
                     ->required()
@@ -113,7 +123,7 @@ class SmartHomeDeviceResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
-                    ->money()
+                    ->money('NGN')
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('created_at')
@@ -129,7 +139,13 @@ class SmartHomeDeviceResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Delete')
+                        ->requiresConfirmation(),
+                ])->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
